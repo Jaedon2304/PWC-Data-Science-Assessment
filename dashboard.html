@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameVault Intelligence Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { background-color: #121212; color: #e0e0e0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .card { background-color: #1e1e1e; border: 1px solid #333; margin-bottom: 20px; }
+        .card-header { border-bottom: 1px solid #333; background-color: #252525; font-weight: bold; }
+        .table { color: #e0e0e0; }
+        .table thead th { border-bottom: 2px solid #444; color: #aaa; }
+        .table td { border-bottom: 1px solid #333; vertical-align: middle; }
+        select.form-select { background-color: #333; color: white; border: 1px solid #555; }
+        .text-accent { color: #2ecc71; }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <h1 class="mb-1">🎮 GameVault <span class="text-accent">Aquisition Viability Dashboard</span></h1>
+    <p class="text-muted mb-4">Automated intelligence pipeline prioritizing PC games with sustained commercial appeal and brand safety.</p>
+
+    <div class="card">
+        <div class="card-header">🏆 Acquisition Target Pipeline</div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Pipeline Status</th>
+                            <th>Game Title</th>
+                            <th>AVS Score (0-100)</th>
+                            <th>Avg Playtime</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12 mb-3">
+            <label for="gameSelector" class="form-label text-muted">Select a Title to Inspect:</label>
+            <select id="gameSelector" class="form-select w-25" onchange="updateCharts()"></select>
+        </div>
+        <div class="col-md-5">
+            <div class="card h-100">
+                <div class="card-header">The AVS Pillar Breakdown</div>
+                <div class="card-body d-flex align-items-center justify-content-center">
+                    <canvas id="radarChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <div class="card h-100">
+                <div class="card-header">Longitudinal Sentiment Stability</div>
+                <div class="card-body"><canvas id="lineChart"></canvas></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Injected Dynamic Data
+    const gameData = [{"title": "Terraria", "avs": 63.09, "status": "Pending Review", "playtimeHours": 431, "metrics": [0.79, 0.58, 0.04], "sentimentTrend": [0.5, 0.6, 0.7, 0.6, 0.8, 0.75, 0.9]}, {"title": "Warhammer 40,000: Mechanicus", "avs": 61.99, "status": "Pending Review", "playtimeHours": 23, "metrics": [0.91, 0.33, 0.34], "sentimentTrend": [0.5, 0.6, 0.7, 0.6, 0.8, 0.75, 0.9]}, {"title": "Overcooked! 2", "avs": 61.95, "status": "Pending Review", "playtimeHours": 29, "metrics": [0.87, 0.34, 0.48], "sentimentTrend": [0.5, 0.6, 0.7, 0.6, 0.8, 0.75, 0.9]}, {"title": "Stardew Valley", "avs": 60.17, "status": "Pending Review", "playtimeHours": 125, "metrics": [0.81, 0.48, 0.04], "sentimentTrend": [0.5, 0.6, 0.7, 0.6, 0.8, 0.75, 0.9]}, {"title": "Slay the Spire", "avs": 60.08, "status": "Pending Review", "playtimeHours": 147, "metrics": [0.8, 0.5, 0.01], "sentimentTrend": [0.5, 0.6, 0.7, 0.6, 0.8, 0.75, 0.9]}, {"title": "Factorio", "avs": 59.95, "status": "Pending Review", "playtimeHours": 389, "metrics": [0.74, 0.56, 0.08], "sentimentTrend": [0.5, 0.6, 0.7, 0.6, 0.8, 0.75, 0.9]}, {"title": "Euro Truck Simulator 2", "avs": 59.43, "status": "Pending Review", "playtimeHours": 207, "metrics": [0.79, 0.49, 0.03], "sentimentTrend": [0.5, 0.6, 0.7, 0.6, 0.8, 0.75, 0.9]}, {"title": "Subnautica", "avs": 58.54, "status": "Pending Review", "playtimeHours": 92, "metrics": [0.8, 0.45, 0.04], "sentimentTrend": [0.5, 0.6, 0.7, 0.6, 0.8, 0.75, 0.9]}, {"title": "Farming Simulator 19", "avs": 57.66, "status": "Pending Review", "playtimeHours": 246, "metrics": [0.68, 0.48, 0.44], "sentimentTrend": [0.5, 0.6, 0.7, 0.6, 0.8, 0.75, 0.9]}, {"title": "ACE COMBAT\u2122 7: SKIES UNKNOWN", "avs": 57.53, "status": "Pending Review", "playtimeHours": 27, "metrics": [0.75, 0.35, 0.56], "sentimentTrend": [0.5, 0.6, 0.7, 0.6, 0.8, 0.75, 0.9]}, {"title": "Left 4 Dead 2", "avs": 56.84, "status": "Pending Review", "playtimeHours": 311, "metrics": [0.74, 0.48, 0.05], "sentimentTrend": [0.5, 0.6, 0.7, 0.6, 0.8, 0.75, 0.9]}, {"title": "Beat Saber", "avs": 55.12, "status": "Pending Review", "playtimeHours": 57, "metrics": [0.68, 0.37, 0.63], "sentimentTrend": [0.5, 0.6, 0.7, 0.6, 0.8, 0.75, 0.9]}, {"title": "RimWorld", "avs": 55.03, "status": "Pending Review", "playtimeHours": 249, "metrics": [0.68, 0.53, 0.02], "sentimentTrend": [0.5, 0.6, 0.7, 0.6, 0.8, 0.75, 0.9]}, {"title": "ASTRONEER", "avs": 54.33, "status": "Pending Review", "playtimeHours": 53, "metrics": [0.8, 0.36, 0.01], "sentimentTrend": [0.5, 0.6, 0.7, 0.6, 0.8, 0.75, 0.9]}, {"title": "PLAYERUNKNOWN'S BATTLEGROUNDS", "avs": 53.98, "status": "Pending Review", "playtimeHours": 359, "metrics": [0.62, 0.57, 0.01], "sentimentTrend": [0.5, 0.6, 0.7, 0.6, 0.8, 0.75, 0.9]}, {"title": "Grand Theft Auto V", "avs": 53.63, "status": "Pending Review", "playtimeHours": 289, "metrics": [0.63, 0.55, 0.02], "sentimentTrend": [0.5, 0.6, 0.7, 0.6, 0.8, 0.75, 0.9]}, {"title": "The Elder Scrolls V: Skyrim Special Edition", "avs": 53.48, "status": "Pending Review", "playtimeHours": 100, "metrics": [0.76, 0.38, 0.04], "sentimentTrend": [0.5, 0.6, 0.7, 0.6, 0.8, 0.75, 0.9]}, {"title": "Rocket League\u00ae", "avs": 53.44, "status": "Pending Review", "playtimeHours": 399, "metrics": [0.65, 0.51, 0.02], "sentimentTrend": [0.5, 0.6, 0.7, 0.6, 0.8, 0.75, 0.9]}, {"title": "Insurgency: Sandstorm", "avs": 53.1, "status": "Pending Review", "playtimeHours": 46, "metrics": [0.78, 0.36, 0.0], "sentimentTrend": [0.5, 0.6, 0.7, 0.6, 0.8, 0.75, 0.9]}, {"title": "Rust", "avs": 52.54, "status": "Pending Review", "playtimeHours": 495, "metrics": [0.62, 0.53, 0.01], "sentimentTrend": [0.5, 0.6, 0.7, 0.6, 0.8, 0.75, 0.9]}, {"title": "MONSTER HUNTER: WORLD", "avs": 51.9, "status": "Pending Review", "playtimeHours": 154, "metrics": [0.65, 0.48, 0.02], "sentimentTrend": [0.5, 0.6, 0.7, 0.6, 0.8, 0.75, 0.9]}, {"title": "RESIDENT EVIL 2 / BIOHAZARD RE:2", "avs": 49.8, "status": "Pending Review", "playtimeHours": 27, "metrics": [0.72, 0.34, 0.01], "sentimentTrend": [0.5, 0.6, 0.7, 0.6, 0.8, 0.75, 0.9]}, {"title": "Dead by Daylight", "avs": 48.99, "status": "Pending Review", "playtimeHours": 250, "metrics": [0.61, 0.46, 0.01], "sentimentTrend": [0.5, 0.6, 0.7, 0.6, 0.8, 0.75, 0.9]}];
+    let radarChartObj = null;
+    let lineChartObj = null;
+
+    function initDashboard() {
+        const tbody = document.getElementById('leaderboard-body');
+        const selector = document.getElementById('gameSelector');
+        gameData.forEach((game, index) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td><select class="form-select form-select-sm w-75"><option>Pending Review</option><option>Shortlisted</option><option>Passed</option><option>Acquired</option></select></td><td class="fw-bold">${game.title}</td><td class="text-accent fw-bold">${game.avs.toFixed(1)} ⭐</td><td>${game.playtimeHours} hrs</td>`;
+            tbody.appendChild(tr);
+            const option = document.createElement('option');
+            option.value = index;
+            option.text = game.title;
+            selector.appendChild(option);
+        });
+        updateCharts();
+    }
+
+    function updateCharts() {
+        const selectedIndex = document.getElementById('gameSelector').value;
+        const game = gameData[selectedIndex];
+        const ctxRadar = document.getElementById('radarChart').getContext('2d');
+        if(radarChartObj) radarChartObj.destroy();
+        radarChartObj = new Chart(ctxRadar, { type: 'radar', data: { labels: ['Sentiment', 'Playtime', 'Community'], datasets: [{ label: game.title, data: game.metrics, backgroundColor: '#2ecc7133', borderColor: '#2ecc71', borderWidth: 2 }] }, options: { plugins: { legend: { display: false } } } });
+        const ctxLine = document.getElementById('lineChart').getContext('2d');
+        if(lineChartObj) lineChartObj.destroy();
+        lineChartObj = new Chart(ctxLine, { type: 'line', data: { labels: ['Launch', 'M1', 'M2', 'M3', 'M4', 'M5', 'M6'], datasets: [{ label: 'Sentiment', data: game.sentimentTrend, borderColor: '#3498db', fill: true, tension: 0.4 }] }, options: { plugins: { legend: { display: false } } } });
+    }
+    window.onload = initDashboard;
+</script>
+</body>
+</html>

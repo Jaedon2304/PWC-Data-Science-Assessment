@@ -1,0 +1,37 @@
+# Steam Reviews Dataset
+
+A sample of user reviews from the Steam store, drawn from a larger collection of ~435k reviews across 48 games. This file contains **15 000 reviews** across 10 games.
+
+**File:** `steam_reviews.csv`  
+**Format:** CSV
+
+## Columns
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `date_posted` | date (`YYYY-MM-DD`) | The date a review is posted. |
+| `funny` | integer | How many other players think the review is funny. |
+| `helpful` | integer | How many other players think the review is helpful. |
+| `hour_played` | float | How many hours a reviewer played the game before writing the review. |
+| `is_early_access_review` | boolean | Whether the review was posted while the game was in Steam Early Access (`True` / `False`). |
+| `recommendation` | string | Whether the reviewer recommends the game (`Recommended` or `Not Recommended`). |
+| `review` | string | The text of the user's review. |
+| `title` | string | The title of the game being reviewed. |
+
+# Approach
+# GameVault Publishing: Aquisition Viability Model
+
+## Summary
+### The repository contains a data driven solution to identify existing games with sustained success involving strong player engagement and positive sentiment to be replublished by GameVault Publishing.
+
+## The Business Problem
+### The current data available uses solely binary metrics which makes it difficult to distinguish between short term success and long term potential. Therefore lacking true insight into the players perspective of the game. Reviewing games manually is infeasible and there is no centralised dashboard.
+
+## The Solution: Aquisition Viability Metric
+### The composite data solution combining data anaylsis of the `steam_reviews.csv` used to model the following. Playtime Distribution to verify player engagement. Community Resonance to filter out noise, obtaining useful reviews which are helpful and funny. Context Aware Sentiment by utilizing a Custom-Lexicon Vader model analyse the text of gaming specific reviews with relevant jargon. 
+
+## The Dashboard: Mockup
+### Included a leaderboard based of the Aquisttion Viability Metric, Time series forecast based of sentiment analysis and a review tracker to allow analysts at GameVault to mark games as 'Shortlisted' or 'Passed'. Implemented as an HTML Page accessing the data after implementing the Aquisition Viability Model.
+
+## AI Declaration
+### Used to break down problem into smaller tasks. I put together the actionable goals. Helped code data pipeline logic. Helped me validate vaderSentiment model and Aquisition Viability Metric. Assisted in developing the dashboard, allowing python to write html page so the data from the jupyter notebook could be directly used. Helped breakdown documentation and structure planning. For models used and methods of validation research was done outside AI with actual sources. AI assisted with coding the notebook, ensuring environmental variables and serialising processing. 
