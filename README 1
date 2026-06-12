@@ -35,3 +35,7 @@ A sample of user reviews from the Steam store, drawn from a larger collection of
 
 ## AI Declaration
 ### Used to break down problem into smaller tasks. I put together the actionable goals. Helped code data pipeline logic. Helped me validate vaderSentiment model and Aquisition Viability Metric. Assisted in developing the dashboard, allowing python to write html page so the data from the jupyter notebook could be directly used. Helped breakdown documentation and structure planning. For models used and methods of validation research was done outside AI with actual sources. AI assisted with coding the notebook, ensuring environmental variables and serialising processing. 
+
+## How to run successfullt
+### Ensure jupyter notebook run.ipynb containing coded is fully run. Then dashboard.html will be ready to be open to view dashboard.
+
